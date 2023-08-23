@@ -1,8 +1,6 @@
 class Color {
     static styles = [
         "color",
-        "background-color",
-        "border-color",
         "outline-color",
         "text-decoration-color",
         "text-shadow",
@@ -615,7 +613,7 @@ class Color {
     }
 
     static has(name) {
-        return Color.styles.includes(name);
+        return Color.styles.some(style => name.includes(style));
     }
 
     static isHex(value) {
@@ -776,7 +774,7 @@ class Selector {
     }
 }
 
-export default class CssParser {
+class CssParser {
     constructor(cssText) {
         this.lines = cssText.split('\n');
         this._isSelector = false;
@@ -854,4 +852,9 @@ export default class CssParser {
 
         return blocks;
     }
+}
+
+export {
+    CssParser,
+    Color
 }

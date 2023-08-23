@@ -1,47 +1,65 @@
-import CssParser from './css-parser.js';
+import { CssParser, Color } from './css-parser.js';
 
 export default class Css {
     constructor(text) {
         this.selectors = new CssParser(text).parse();
 
-        this.groupColors = this.getGroupColors();
+        this.groups = [];
+        
 
-        this.sortHexColors();
+        this.groups.push({
+            'style': 'common',
+            'colors': Css.sortHexColors(this.groupByStyle())
+        });
+
+        Color.styles.forEach(style => {
+            const strict = style === 'color';
+
+            const temp = this.groupByStyle(style, strict);
+
+            if (temp.length) {
+                style = style.replace(/-./g, (match) => match[1].toUpperCase())
+
+                this.groups.push({
+                    style,
+                    'colors': Css.sortHexColors(temp)
+                });
+            }            
+        });
     }
     
     /**
      * Group colors through selectors.
+     * @param {string} style - style name
+     * @param {boolean} strict - strict match
      * @returns {array}
      */
-    getGroupColors() {
-        const result = [];
-        const colors = [];
-        const selectors = this.selectors;
+    groupByStyle(style, strict = false) {
+        let result = [];
+        let groups = {};
 
-        selectors.forEach(item => {
-            item.styles.forEach(style => {
-                if (style.color) {
-                    const color = style.color.hex;
-                    if (!colors.includes(color)) {
-                        colors.push(color);
+        this.selectors.forEach(item => {
+            item.styles.forEach(s => {
+                if (!style || (strict ? s.name === style : s.name.includes(style))) {
+                    if (s.color && s.color.hex) {
+                        let hex = s.color.hex;
+
+                        if (!groups[hex]) {
+                            groups[hex] = {
+                                color: hex,
+                                items: []
+                            };
+                        }
+
+                        groups[hex].items.push(item);
                     }
                 }
             });
         });
 
-        colors.forEach(color => {
-            const link = [];
-            selectors.forEach(selector => {
-                selector.styles.forEach(style => {
-                    if (style.color) {
-                        if (style.color.hex === color && !link.includes(selector)) {
-                            link.push(selector);
-                        }
-                    }
-                });
-            });
-            result.push({ color, link });
-        });
+        for (let key in groups) {
+            result.push(groups[key]);
+        }
 
         return result;
     }
@@ -49,15 +67,15 @@ export default class Css {
     /**
      * Sort group colors by color.
      */
-    sortGroupColors() {
-        this.groupColors.sort((a, b) => {
-            const colorA = a.color;
-            const colorB = b.color;
-            return colorA.localeCompare(colorB);
-        });
-    }
+    // sortGroupColors() {
+    //     this.groupColors.sort((a, b) => {
+    //         const colorA = a.color;
+    //         const colorB = b.color;
+    //         return colorA.localeCompare(colorB);
+    //     });
+    // }
 
-    hexToHsv(hex) {
+    static hexToHsv(hex) {
         // Convert HEX to RGB
         let r = parseInt(hex.slice(1, 3), 16) / 255;
         let g = parseInt(hex.slice(3, 5), 16) / 255;
@@ -78,15 +96,13 @@ export default class Css {
         return [h, s, v];
     }
     
-    sortHexColors() {
+    static sortHexColors(arr) {
         // Sort the array of HEX colors by their hue value
-        return this.groupColors.sort((a, b) => {
+        return arr.sort((a, b) => {
             const colorA = a.color;
             const colorB = b.color;
-            return this.hexToHsv(colorA)[0] - this.hexToHsv(colorB)[0]
+            return Css.hexToHsv(colorA)[0] - Css.hexToHsv(colorB)[0]
         });
-    }
-    
-
+    }    
 }
 

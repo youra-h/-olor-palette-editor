@@ -4,12 +4,12 @@
             <nav class="col-md-4 col-lg-2 d-md-block sidebar collapse vh-100">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="#theme" data-bs-toggle="tab"><i
                                     class="fas fa-palette pe-3"></i> Тема</a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="#css" data-bs-toggle="tab"><i
+                            <a class="nav-link active" aria-current="page" href="#css" data-bs-toggle="tab"><i
                                     class="fas fa-palette pe-3"></i> Css</a>
                         </li>
                         <li class="nav-item">
@@ -23,21 +23,21 @@
             <main class="col-md-8 ms-sm-auto col-lg-10 px-md-4">
                 <div class="tab-content" id="myTabContent">
                     <!-- Theme -->
-                    <div class="tab-pane fade show active" id="theme" role="tabpanel" aria-labelledby="theme-tab">
+                    <!-- <div class="tab-pane fade show active" id="theme" role="tabpanel" aria-labelledby="theme-tab">
                         <div class="row">
                             <div class="col-6">
                                 <label for="colors-input">Основные цвета:</label>
                                 <textarea id="colors-input" class="form-control" rows="50" v-model="cssTheme"></textarea>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- Css -->
-                    <div class="tab-pane fade" id="css" role="tabpanel" aria-labelledby="css-tab">
+                    <div class="tab-pane fade  show active" id="css" role="tabpanel" aria-labelledby="css-tab">
                         <div class="row">
                             <div class="col-12">
                                 <add-css-file @loadFiles="loadFiles"></add-css-file>
                                 <hr>
-                                <view-css-file :files="files"></view-css-file>
+                                <view-css :files="files"></view-css>
                             </div>
                         </div>
                     </div>
@@ -98,13 +98,13 @@ import Css from './classes/css.js';
 import Files from './classes/files.js';
 
 import AddCssFile from './components/AddCssFile.vue';
-import ViewCssFile from './components/ViewCssFile.vue';
+import ViewCss from './components/ViewCss.vue';
 
 export default {
     name: 'App',
     components: {
         AddCssFile,
-        ViewCssFile
+        ViewCss
     },
     data() {
         return {
