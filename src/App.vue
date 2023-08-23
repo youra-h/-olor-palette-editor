@@ -168,7 +168,7 @@ export default {
         },
         process() {
             this.cssText = `body {
-                background-color: #fff;
+                background-color: white!important;
                 color: #333;
             }`;
 
