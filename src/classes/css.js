@@ -39,7 +39,6 @@ export default class Css {
         let groups = {};
 
         this.selectors.forEach(item => {
-            console.log(item);
             item.styles.forEach(s => {
                 if (!style || (strict ? s.name === style : s.name.includes(style))) {
                     if (s.color && s.color.hex) {

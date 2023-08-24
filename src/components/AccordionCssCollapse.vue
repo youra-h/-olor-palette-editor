@@ -5,7 +5,7 @@
             <div v-for="(selector, selectorIndex) in selectors" :key="selectorIndex">
                 <div class="names-block mb-3 p-2 bg-light rounded-3" @click="selector.showStyles = !selector.showStyles">
                     <p v-for="(name, nameIndex) in selector.names" :key="nameIndex" class="mb-0 text-muted small">
-                        {{ name }}
+                        <i class="fas fa-search me-2" @click="searchFiles(name)"></i> {{ name.text }}
                     </p>
                 </div>
                 <transition name="fade">
@@ -21,11 +21,22 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     props: {
         parentId: String,
         accordionId: String,
         selectors: Object,
+    },
+    methods: {
+        async searchFiles() {
+            // const response = await axios.post('/your-endpoint', { classes: this.name.classes });
+            // const response = await axios.get('http://www.b1.local/en/buhalterija/pajamosanaudos');
+            const response = await fetch('https://ya.ru');
+            // Обработка ответа
+            console.log(response.data);
+        },
     },
 };
 </script>
@@ -34,14 +45,19 @@ export default {
 .names-block {
     cursor: pointer;
 }
+
+.names-block>p {
+    line-height: 2;
+}
+
 .accordion-body {
     padding-bottom: 0;
 }
 
 .styles-block {
     margin-top: -16px;
-    border-top-left-radius: 0!important;
-    border-top-right-radius: 0!important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
 }
 
 .selector-style {
@@ -58,5 +74,13 @@ export default {
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
+}
+
+.fas.fa-search {
+    color: lightblue;
+}
+
+.fas.fa-search:hover {
+    color: rgb(96, 175, 201);
 }
 </style>

@@ -643,7 +643,7 @@ class Color {
             if (convertToHex) {
                 color = Color.nameToHex(color);
             }
-            
+
             return color;
         }
 
@@ -752,7 +752,16 @@ class Selector {
         if (value.length === 0) return;
 
         this._text += value;
-        this.names = this._text.split(',').map(part => part.trim());
+
+        const names = this._text.split(',').map(part => part.trim());
+
+        this.names = names.map(text => {
+            return {
+                text,
+                'classes': Selector.parseCssClasses(text),
+                files: []
+            }            
+        });
     }
 
     get text() {
@@ -771,6 +780,21 @@ class Selector {
 
     end() {
         this.endBlock = true;
+    }
+
+    static parseCssClasses(str) {
+        let classes = [];
+        let regex = /[\.#]([a-zA-Z0-9-]+)/g;
+        let match;
+
+        while ((match = regex.exec(str)) !== null) {
+            let className = match[1];
+            if (className && !classes.includes(className)) {
+                classes.push(className);
+            }
+        }
+
+        return classes;
     }
 }
 
