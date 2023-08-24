@@ -5,7 +5,7 @@ export default class Css {
         this.selectors = new CssParser(text).parse();
 
         this.groups = [];
-        
+
 
         this.groups.push({
             'style': 'common',
@@ -24,10 +24,10 @@ export default class Css {
                     style,
                     'colors': Css.sortHexColors(temp)
                 });
-            }            
+            }
         });
     }
-    
+
     /**
      * Group colors through selectors.
      * @param {string} style - style name
@@ -39,10 +39,11 @@ export default class Css {
         let groups = {};
 
         this.selectors.forEach(item => {
+            console.log(item);
             item.styles.forEach(s => {
                 if (!style || (strict ? s.name === style : s.name.includes(style))) {
                     if (s.color && s.color.hex) {
-                        let hex = s.color.hex;
+                        const hex = s.color.hex;
 
                         if (!groups[hex]) {
                             groups[hex] = {
@@ -51,7 +52,9 @@ export default class Css {
                             };
                         }
 
-                        groups[hex].items.push(item);
+                        if (!groups[hex].items.includes(item)) {
+                            groups[hex].items.push(item);
+                        }
                     }
                 }
             });
@@ -80,7 +83,7 @@ export default class Css {
         let r = parseInt(hex.slice(1, 3), 16) / 255;
         let g = parseInt(hex.slice(3, 5), 16) / 255;
         let b = parseInt(hex.slice(5, 7), 16) / 255;
-    
+
         // Convert RGB to HSV
         let max = Math.max(r, g, b);
         let min = Math.min(r, g, b);
@@ -92,10 +95,10 @@ export default class Css {
         else if (max === b) h = (r - g) / d + 4;
         let s = max === 0 ? 0 : d / max;
         let v = max;
-    
+
         return [h, s, v];
     }
-    
+
     static sortHexColors(arr) {
         // Sort the array of HEX colors by their hue value
         return arr.sort((a, b) => {
@@ -103,6 +106,6 @@ export default class Css {
             const colorB = b.color;
             return Css.hexToHsv(colorA)[0] - Css.hexToHsv(colorB)[0]
         });
-    }    
+    }
 }
 

@@ -167,14 +167,19 @@ export default {
             this.files = temp;
         },
         process() {
-            this.cssText = `body {
-                background-color: white!important;
-                color: #333;
-            }`;
+            this.cssText = `.label-pink.arrowed:before {
+    border-right-color: #d6487e;
+    -moz-border-right-colors: #d6487e;
+}
+
+.label-pink.arrowed-in:before {
+    border-color: #d6487e;
+    -moz-border-right-colors: #d6487e;
+}`;
 
             const css = new Css(this.cssText);
 
-            console.log(css.selectors);
+            console.log(css);
 
 
             // const parseTheme = new ParseTheme(this.cssTheme);
