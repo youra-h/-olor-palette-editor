@@ -4,8 +4,8 @@
         <div class="accordion-body">
             <div v-for="(selector, selectorIndex) in selectors" :key="selectorIndex">
                 <div class="names-block mb-3 p-2 bg-light rounded-3" @click="selector.showStyles = !selector.showStyles">
-                    <p v-for="(name, nameIndex) in selector.names" :key="nameIndex" class="mb-0 text-muted small">
-                        <i class="fas fa-search me-2" @click.stop="searchFiles(name)"></i> {{ name.text }}
+                    <p v-for="(item, itemIndex) in selector.names" :key="itemIndex" class="mb-0 text-muted small">
+                        <i class="fas fa-search me-2" @click.stop="searchFiles(item)"></i> {{ item.text }}
                     </p>
                 </div>
                 <transition name="fade">
@@ -21,8 +21,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
     props: {
         parentId: String,
@@ -31,16 +29,19 @@ export default {
     },
     methods: {
         async searchFiles(item) {
-            const response = await axios.post('http://www.b1.local/test', { classes: item.classes },
-                {
-                    headers: {
-                        'Content-Type': 'text/plain;charset=UTF-8'
-                    }
-                });
+            const result = await this.$store.dispatch('findClasses', item.classes);
+            // do something with the result
+            console.log(result);
+            // const response = await axios.post('http://www.b1.local/test', { classes: item.classes },
+            //     {
+            //         headers: {
+            //             'Content-Type': 'text/plain;charset=UTF-8'
+            //         }
+            //     });
 
-            // const response = await axios.post('http://www.b1.local/test', {});
+            // // const response = await axios.post('http://www.b1.local/test', {});
 
-            console.log(response.data);
+            // console.log(response.data);
             // const response = await axios.get('http://www.b1.local/en/buhalterija/pajamosanaudos');
             // const response = await fetch('http://www.b1.local/test', {
             //     method: 'POST',

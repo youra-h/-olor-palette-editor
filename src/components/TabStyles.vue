@@ -5,12 +5,12 @@
                 <button
                     class="nav-link"
                     :class="{ active: index === 0 }"
-                    :id="'tab-' + item.style + index"
+                    :id="'tab-' + id(item.style, index)"
                     data-bs-toggle="tab"
-                    :data-bs-target="'#tab-pane-' + item.style + index"
+                    :data-bs-target="'#tab-pane-' + id(item.style, index)"
                     type="button"
                     role="tab"
-                    :aria-controls="'tab-pane-' + item.style + index"
+                    :aria-controls="'tab-pane-' + id(item.style, index)"
                     :aria-selected="index === 0"
                 >
                     {{ item.style }}
@@ -21,9 +21,9 @@
             <div
                 class="tab-pane fade"
                 :class="{ 'show active': index === 0 }"
-                :id="'tab-pane-' + item.style + index"
+                :id="'tab-pane-' + id(item.style, index)"
                 role="tabpanel"
-                :aria-labelledby="'tab-' + item.style + index"
+                :aria-labelledby="'tab-' + id(item.style, index)"
                 tabindex="0"
                 v-for="(item, index) in data"
                 :key="index"
@@ -42,8 +42,14 @@ export default {
         AccordionCss,
     },
     props: {
+        parentId: String,
         data: Object,
     },
+    methods: {
+        id(style, index) {
+            return this.parentId + style;
+        },
+    }
 };
 </script>
   

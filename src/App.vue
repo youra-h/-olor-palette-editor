@@ -35,9 +35,9 @@
                     <div class="tab-pane fade  show active" id="css" role="tabpanel" aria-labelledby="css-tab">
                         <div class="row">
                             <div class="col-12">
-                                <add-css-file @loadFiles="loadFiles"></add-css-file>
+                                <add-css-file></add-css-file>
                                 <hr>
-                                <view-css :files="files"></view-css>
+                                <view-css></view-css>
                             </div>
                         </div>
                     </div>
@@ -95,10 +95,6 @@
 
 <script>
 
-
-import Css from './classes/css.js';
-import Files from './classes/files.js';
-
 import AddCssFile from './components/AddCssFile.vue';
 import ViewCss from './components/ViewCss.vue';
 
@@ -108,9 +104,11 @@ export default {
         AddCssFile,
         ViewCss
     },
+    mounted() {
+        this.$store.dispatch("fetchSearchFiles");
+    },
     data() {
         return {
-            files: [],
             cssTheme: `:root, [data-theme=default] {
                 --color-primary: #428bca;
                 --color-primary-light: #5697d0;
@@ -150,34 +148,17 @@ export default {
             tolerance: 0.05
         }
     },
-    methods: {
-        async loadFiles(files) {
-            const temp = [];
-
-            for (const file of files) {
-                const text = await Files.getText(file);
-
-                const item = {
-                    fileName: file.name,
-                    text,
-                    css: new Css(text)
-                }
-
-                temp.push(item);
-            }
-
-            this.files = temp;
-        },
+    methods: {        
         process() {
             this.cssText = `.label-pink.arrowed:before {
-    border-right-color: #d6487e;
-    -moz-border-right-colors: #d6487e;
-}
+                border-right-color: #d6487e;
+                -moz-border-right-colors: #d6487e;
+            }
 
-.label-pink.arrowed-in:before {
-    border-color: #d6487e;
-    -moz-border-right-colors: #d6487e;
-}`;
+            .label-pink.arrowed-in:before {
+                border-color: #d6487e;
+                -moz-border-right-colors: #d6487e;
+            }`;
 
             const css = new Css(this.cssText);
 

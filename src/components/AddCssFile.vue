@@ -1,8 +1,8 @@
 <template>
     <div>
-        <div v-for="(file, index) in cssFiles" :key="file.name" class="d-flex align-items-center">
+        <div v-for="(file, index) in cssFiles" :key="index" class="d-flex align-items-center">
             <button @click="removeFile(file)" type="button" class="btn-close me-2" aria-label="Close"></button>
-            <span class="text-muted" style="font-size: 0.8rem;">{{ file.name }}</span>
+            <span class="text-muted" style="font-size: 0.8rem;">{{ file.fileName }}</span>
         </div>
         <button @click="addFile" class="btn btn-primary mt-2">Добавить файл CSS</button>
     </div>
@@ -31,7 +31,7 @@ export default {
         removeFile(file) {
             this.$store.dispatch("removeCssFile", file);
         }
-    }
+    },    
 };
 </script>
   

@@ -3,7 +3,7 @@
         <div class="d-flex align-items-start mt-3">
             <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                 <button
-                    v-for="(item, index) in files"
+                    v-for="(item, index) in cssFiles"
                     :key="index"
                     class="nav-link"
                     :class="{ active: index === 0 }"
@@ -20,7 +20,7 @@
             </div>
             <div class="tab-content" id="v-pills-tabContent">
                 <div
-                    v-for="(item, index) in files"
+                    v-for="(item, index) in cssFiles"
                     :key="index"
                     class="tab-pane fade"
                     :class="{ 'show active': index === 0 }"
@@ -28,8 +28,7 @@
                     role="tabpanel"
                     :aria-labelledby="`v-pills-${item.fileName}-tab`"
                 >
-                    <tab-styles :data="item.css.groups"></tab-styles>
-                    <!-- <accordion-css :index="index" :data="item.css.common"></accordion-css> -->
+                    <tab-styles :parentId="item.fileName" :data="item.css.groups"></tab-styles>
                 </div>
             </div>
         </div>
@@ -38,16 +37,13 @@
   
 <script>
 import TabStyles from './TabStyles.vue';
-// import AccordionCss from './AccordionCss.vue';
+import { mapGetters } from "vuex";
 
 export default {
     components: {
         TabStyles,
-        // AccordionCss,
     },
-    props: {
-        files: {}
-    }
+    computed: mapGetters(["cssFiles"])    
 }
 
 </script>
