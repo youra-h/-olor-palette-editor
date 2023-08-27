@@ -784,7 +784,7 @@ class Selector {
 
     static parseCssClasses(str) {
         let classes = [];
-        let regex = /[\.#]([a-zA-Z0-9-]+)/g;
+        let regex = /[\.#]([a-zA-Z0-9-_]+)/g;
         let match;
 
         while ((match = regex.exec(str)) !== null) {

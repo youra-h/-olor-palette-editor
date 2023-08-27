@@ -5,7 +5,7 @@
             <div v-for="(selector, selectorIndex) in selectors" :key="selectorIndex">
                 <div class="names-block mb-3 p-2 bg-light rounded-3" @click="selector.showStyles = !selector.showStyles">
                     <p v-for="(name, nameIndex) in selector.names" :key="nameIndex" class="mb-0 text-muted small">
-                        <i class="fas fa-search me-2" @click="searchFiles(name)"></i> {{ name.text }}
+                        <i class="fas fa-search me-2" @click.stop="searchFiles(name)"></i> {{ name.text }}
                     </p>
                 </div>
                 <transition name="fade">
@@ -30,12 +30,28 @@ export default {
         selectors: Object,
     },
     methods: {
-        async searchFiles() {
-            // const response = await axios.post('/your-endpoint', { classes: this.name.classes });
-            // const response = await axios.get('http://www.b1.local/en/buhalterija/pajamosanaudos');
-            const response = await fetch('https://ya.ru');
-            // Обработка ответа
+        async searchFiles(item) {
+            const response = await axios.post('http://www.b1.local/test', { classes: item.classes },
+                {
+                    headers: {
+                        'Content-Type': 'text/plain;charset=UTF-8'
+                    }
+                });
+
+            // const response = await axios.post('http://www.b1.local/test', {});
+
             console.log(response.data);
+            // const response = await axios.get('http://www.b1.local/en/buhalterija/pajamosanaudos');
+            // const response = await fetch('http://www.b1.local/test', {
+            //     method: 'POST',
+            //     // headers: {
+            //     //     'Content-Type': 'application/json;charset=utf-8'
+            //     // },
+            //     body: JSON.stringify({ param1: 'value1', param2: 'value2' })
+            // });
+
+            // Обработка ответа
+            // console.log(await response.text());
         },
     },
 };

@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div v-for="(file, index) in files" :key="file.name" class="d-flex align-items-center">
-            <button @click="removeFile(index)" type="button" class="btn-close me-2" aria-label="Close"></button>
+        <div v-for="(file, index) in cssFiles" :key="file.name" class="d-flex align-items-center">
+            <button @click="removeFile(file)" type="button" class="btn-close me-2" aria-label="Close"></button>
             <span class="text-muted" style="font-size: 0.8rem;">{{ file.name }}</span>
         </div>
         <button @click="addFile" class="btn btn-primary mt-2">Добавить файл CSS</button>
@@ -9,12 +9,10 @@
 </template>
   
 <script>
-export default {    
-    data() {
-        return {
-            files: []
-        };
-    },
+import { mapGetters } from "vuex";
+
+export default {
+    computed: mapGetters(["cssFiles"]),
     methods: {
         addFile() {
             let fileInput = document.createElement("input");
@@ -25,16 +23,13 @@ export default {
             fileInput.onchange = () => {
                 const file = fileInput.files[0];
 
-                this.files.push(file);
-
-                this.$emit("loadFiles", this.files);
+                this.$store.dispatch("addCssFile", file);
             };
 
             fileInput.click();
         },
-        removeFile(index) {
-            this.files.splice(index, 1);
-            this.$emit("loadFiles", this.files);
+        removeFile(file) {
+            this.$store.dispatch("removeCssFile", file);
         }
     }
 };

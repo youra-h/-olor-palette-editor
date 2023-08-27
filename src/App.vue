@@ -94,6 +94,8 @@
 </template>
 
 <script>
+
+
 import Css from './classes/css.js';
 import Files from './classes/files.js';
 
@@ -101,7 +103,7 @@ import AddCssFile from './components/AddCssFile.vue';
 import ViewCss from './components/ViewCss.vue';
 
 export default {
-    name: 'App',
+    name: 'App',    
     components: {
         AddCssFile,
         ViewCss
