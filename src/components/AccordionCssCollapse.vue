@@ -29,30 +29,9 @@ export default {
     },
     methods: {
         async searchFiles(item) {
-            const result = await this.$store.dispatch('findClasses', item.classes);
-            // do something with the result
-            console.log(result);
-            // const response = await axios.post('http://www.b1.local/test', { classes: item.classes },
-            //     {
-            //         headers: {
-            //             'Content-Type': 'text/plain;charset=UTF-8'
-            //         }
-            //     });
-
-            // // const response = await axios.post('http://www.b1.local/test', {});
-
-            // console.log(response.data);
-            // const response = await axios.get('http://www.b1.local/en/buhalterija/pajamosanaudos');
-            // const response = await fetch('http://www.b1.local/test', {
-            //     method: 'POST',
-            //     // headers: {
-            //     //     'Content-Type': 'application/json;charset=utf-8'
-            //     // },
-            //     body: JSON.stringify({ param1: 'value1', param2: 'value2' })
-            // });
-
-            // Обработка ответа
-            // console.log(await response.text());
+            const files = await this.$store.dispatch('findClasses', item.classes);
+            console.log(files);
+            item.findFiles = files;            
         },
     },
 };
