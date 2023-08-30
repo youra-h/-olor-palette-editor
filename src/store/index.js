@@ -47,7 +47,7 @@ const store = {
         },
         async findClasses({ state }, classes) {
             // number of parts to split the searchFiles array into
-            const n = 10;
+            const n = 2;
 
             // calculate the size of each part
             const size = Math.ceil(state.searchFiles.length / n);
@@ -64,8 +64,27 @@ const store = {
                     }
                 })));
 
-            // combine the responses from all requests and return as a single result
-            return responses.reduce((result, response) => [...result, ...response.data], []);
+            // combine the results of the parallel requests
+            const combinedClasses = responses.reduce((result, response) => {
+                const classes = response.data.classes;
+                for (let i = 0; i < classes.length; i++) {
+                    if (result[i] === undefined) {
+                        result[i] = classes[i];
+                    } else {
+                        result[i].found = result[i].found || classes[i].found;
+                    }
+                }
+                return result;
+            }, []);
+
+            let combinedFiles = [];
+
+            if (!combinedClasses.some(c => !c.found)) {
+                // send parallel requests to the server with each part of the searchFiles array and the classes
+                combinedFiles = responses.reduce((result, response) => [...result, ...response.data.files], []);
+            }
+
+            return combinedFiles;
         }
 
     }

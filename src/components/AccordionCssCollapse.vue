@@ -3,8 +3,9 @@
         :data-bs-parent="'#accordion-' + accordionId">
         <div class="accordion-body">
             <div v-for="(selector, selectorIndex) in selectors" :key="selectorIndex">
-                <div class="names-block mb-3 bg-light rounded-2">
-                    <div v-for="(item, itemIndex) in selector.names" :key="itemIndex" class="mb-0 small">
+                <div>
+                    <div v-for="(item, itemIndex) in selector.names" :key="itemIndex"
+                        class="names-block rounded-2 mb-3 small bg-light" :class="{ 'text-danger': item.remove }">
                         <div class="d-flex align-items-center highlight-toolbar p-1 pe-3 ps-3 border-bottom">
                             <strong class="classes">
                                 {{ item.text }}
@@ -22,24 +23,44 @@
                                     </svg>
                                 </button>
 
+                                <button type="button" class="icon text-nowrap" @click.stop="remove(item)">
+                                    <svg v-if="item.remove" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                            d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z" />
+                                    </svg>
+                                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                        <path
+                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                                        <path
+                                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                         <div class="styles-block p-3 pt-2 pb-2 rounded-2">
-                            <p class="selector-style" v-for="(style, styleIndex) in selector.styles" :key="styleIndex">
-                                {{ style.name }}: {{ style.value }}
-                            </p>
+
+                            <div class="d-flex flex-column">
+                                <div class="d-flex" v-for="(style, styleIndex) in selector.styles" :key="styleIndex">
+                                    <div class="me-3 opacity-60">{{ style.line }}:</div>
+                                    <div class="flex-grow-1">{{ style.name }}: {{ style.value }}</div>
+                                </div>
+                            </div>
                         </div>
                         <transition name="fade" mode="out-in">
-                            <div class="alert alert-danger border-0" role="alert"
+                            <div class="alert alert-danger border-bottom-0 border-start-0 border-end-0" role="alert"
                                 v-if="item.findFiles && item.findFiles.length === 0">
                                 Не найден
                             </div>
                             <div v-else>
-                                <div v-for="(file, fileIndex) in item.findFiles" :key="fileIndex"
-                                    class="alert alert-warning border-0 pt-2 pb-2" role="alert">
-                                    <p class="small"><b>{{ file.file }}</b></p>
+                                <div v-for="(item, fileIndex) in item.findFiles" :key="fileIndex"
+                                    class="alert border-0 pt-3 pb-3 border-bottom-0 border-start-0 border-end-0"
+                                    :class="{ 'alert-success': item.type === 'exact', 'alert-warning': item.type === 'inexact' }"
+                                    role="alert">
+                                    <p class="small"><b>{{ item.file }}</b></p>
                                     <div class="d-flex flex-column">
-                                        <div v-for="(line, lineIndex) in file.lines" :key="lineIndex" class="d-flex">
+                                        <div v-for="(line, lineIndex) in item.lines" :key="lineIndex" class="d-flex">
                                             <div class="me-3">{{ line.num }}:</div>
                                             <div class="flex-grow-1">{{ line.text }}</div>
                                         </div>
@@ -67,9 +88,12 @@ export default {
             item.findFiles = null;
 
             setTimeout(async () => {
-                const files = await this.$store.dispatch('findClasses', item.classes);
-                item.findFiles = files;
+                const response = await this.$store.dispatch('findClasses', item.classes);
+                item.findFiles = response;
             }, 300);
+        },
+        remove(item) {
+            item.remove = !item.remove;
         },
     },
 };
