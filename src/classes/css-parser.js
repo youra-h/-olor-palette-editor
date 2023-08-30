@@ -759,7 +759,7 @@ class Selector {
             return {
                 text,
                 'classes': Selector.parseCssClasses(text),
-                findFiles: []
+                findFiles: undefined
             }            
         });
     }
