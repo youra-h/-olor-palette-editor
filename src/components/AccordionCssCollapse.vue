@@ -3,52 +3,57 @@
         :data-bs-parent="'#accordion-' + accordionId">
         <div class="accordion-body">
             <div v-for="(selector, selectorIndex) in selectors" :key="selectorIndex">
-                <div class="names-block mb-3 p-2 bg-light rounded-3">
-                    <div v-for="(item, itemIndex) in selector.names" :key="itemIndex" class="mb-0 text-muted small">
-                        <div>
-                            <i class="fas fa-search me-2" @click.stop="searchFiles(item)"></i>
-                            <span class="classes" @click="selector.showStyles = !selector.showStyles">
+                <div class="names-block mb-3 bg-light rounded-2">
+                    <div v-for="(item, itemIndex) in selector.names" :key="itemIndex" class="mb-0 small">
+                        <div class="d-flex align-items-center highlight-toolbar p-1 pe-3 ps-3 border-bottom">
+                            <strong class="classes">
                                 {{ item.text }}
-                            </span>
-                        </div>
-                        <transition name="fade" mode="out-in">
-                            <div v-if="item.findFiles === null" class="mt-1">
+                            </strong>
+                            <div class="d-flex ms-auto">
                                 <!-- Spinner -->
-                                <div class="spinner-border spinner-border-sm text-lightblue ml-1" role="status">
+                                <div v-if="item.findFiles === null" class="spinner-border" role="status">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
+                                <button v-else type="button" class="icon text-nowrap" @click.stop="searchFiles(item)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-search" viewBox="0 0 16 16">
+                                        <path
+                                            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                    </svg>
+                                </button>
+
                             </div>
-                            <div class="alert alert-danger mt-1" role="alert"
-                                v-else-if="item.findFiles && item.findFiles.length === 0">
+                        </div>
+                        <div class="styles-block p-3 pt-2 pb-2 rounded-2">
+                            <p class="selector-style" v-for="(style, styleIndex) in selector.styles" :key="styleIndex">
+                                {{ style.name }}: {{ style.value }}
+                            </p>
+                        </div>
+                        <transition name="fade" mode="out-in">
+                            <div class="alert alert-danger border-0" role="alert"
+                                v-if="item.findFiles && item.findFiles.length === 0">
                                 Не найден
                             </div>
-                            <div v-else-if="item.findFiles">
-                                <div v-for="(file, fileIndex) in item.findFiles" :key="fileIndex">
-                                    <p class="text-muted small">{{ file.file }}</p>
-                                    <ul>
-                                        <li v-for="(line, lineIndex) in file.lines" :key="lineIndex">
-                                            {{ line.num }}:
-                                            <pre>{{ line.line }}</pre>
-                                        </li>
-                                    </ul>
+                            <div v-else>
+                                <div v-for="(file, fileIndex) in item.findFiles" :key="fileIndex"
+                                    class="alert alert-warning border-0 pt-2 pb-2" role="alert">
+                                    <p class="small"><b>{{ file.file }}</b></p>
+                                    <div class="d-flex flex-column">
+                                        <div v-for="(line, lineIndex) in file.lines" :key="lineIndex" class="d-flex">
+                                            <div class="me-3">{{ line.num }}:</div>
+                                            <div class="flex-grow-1">{{ line.text }}</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </transition>
-
                     </div>
-
                 </div>
-                <transition name="fade">
-                    <div v-if="selector.showStyles" class="styles-block mb-3 p-2 bg-dark text-light rounded">
-                        <p class="selector-style" v-for="(style, styleIndex) in selector.styles" :key="styleIndex">
-                            {{ style.name }}: {{ style.value }}
-                        </p>
-                    </div>
-                </transition>
             </div>
         </div>
     </div>
 </template>
+
 
 <script>
 export default {
@@ -59,24 +64,28 @@ export default {
     },
     methods: {
         async searchFiles(item) {
-            // инициализация массива, чтобы показать элемент
             item.findFiles = null;
 
-            const files = await this.$store.dispatch('findClasses', item.classes);
-            console.log(files);
-            item.findFiles = files;
+            setTimeout(async () => {
+                const files = await this.$store.dispatch('findClasses', item.classes);
+                item.findFiles = files;
+            }, 300);
         },
     },
 };
 </script>
 
 <style scoped>
-.names-block>div>span.classes {
-    cursor: pointer;
+.names-block {
+    border: 1px solid var(--bs-border-color);
 }
 
 .names-block>p {
     line-height: 2;
+}
+
+.fa-search {
+    cursor: pointer;
 }
 
 .accordion-body {
@@ -84,9 +93,9 @@ export default {
 }
 
 .styles-block {
-    margin-top: -16px;
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;
+    background-color: var(--bs-body-bg);
 }
 
 .selector-style {
@@ -114,9 +123,12 @@ export default {
     color: rgb(96, 175, 201);
 }
 
-.spinner-border-sm {
-    width: 1rem;
-    height: 1rem;
+.spinner-border {
+    color: var(--bs-body-color);
+    --bs-spinner-border-width: 1px;
+    --bs-spinner-width: 1.3rem;
+    --bs-spinner-height: 1.3rem;
+    margin: 5px;
 }
 
 .text-lightblue {
@@ -125,5 +137,24 @@ export default {
 
 .alert {
     --bs-alert-margin-bottom: 0;
+    --bs-alert-border-radius: 0;
+}
+
+button.icon {
+    display: block;
+    padding: 0.5em;
+    line-height: 1;
+    color: var(--bs-body-color);
+    background-color: var(--bd-pre-bg);
+    border: 0;
+    border-radius: 0.25rem;
+}
+
+button.icon:hover {
+    color: var(--bs-link-hover-color);
+}
+
+.alert-warning p.small {
+    margin-bottom: .4rem;
 }
 </style>
