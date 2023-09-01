@@ -150,8 +150,8 @@ export default {
 .spinner-border {
     color: var(--bs-body-color);
     --bs-spinner-border-width: 1px;
-    --bs-spinner-width: 1.3rem;
-    --bs-spinner-height: 1.3rem;
+    --bs-spinner-width: 1.2rem;
+    --bs-spinner-height: 1.2rem;
     margin: 5px;
 }
 
@@ -180,5 +180,9 @@ button.icon:hover {
 
 .alert-warning p.small {
     margin-bottom: .4rem;
+}
+
+.accordion-button::after {
+    --bs-accordion-btn-icon-width: 1 rem;
 }
 </style>
