@@ -4,12 +4,12 @@
             <nav class="col-md-4 col-lg-2 d-md-block sidebar collapse vh-100">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                        <!-- <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="#theme" data-bs-toggle="tab"><i
                                     class="fas fa-palette pe-3"></i> Тема</a>
-                        </li> -->
+                        </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#css" data-bs-toggle="tab"><i
+                            <a class="nav-link" aria-current="page" href="#css" data-bs-toggle="tab"><i
                                     class="fas fa-palette pe-3"></i> Css</a>
                         </li>
                         <li class="nav-item">
@@ -23,16 +23,13 @@
             <main class="col-md-8 ms-sm-auto col-lg-10 px-md-4">
                 <div class="tab-content" id="myTabContent">
                     <!-- Theme -->
-                    <!-- <div class="tab-pane fade show active" id="theme" role="tabpanel" aria-labelledby="theme-tab">
+                    <div class="tab-pane fade show active" id="theme" role="tabpanel" aria-labelledby="theme-tab">
                         <div class="row">
-                            <div class="col-6">
-                                <label for="colors-input">Основные цвета:</label>
-                                <textarea id="colors-input" class="form-control" rows="50" v-model="cssTheme"></textarea>
-                            </div>
+                            <theme></theme>
                         </div>
-                    </div> -->
+                    </div>
                     <!-- Css -->
-                    <div class="tab-pane fade  show active" id="css" role="tabpanel" aria-labelledby="css-tab">
+                    <div class="tab-pane fade" id="css" role="tabpanel" aria-labelledby="css-tab">
                         <div class="row">
                             <div class="col-12">
                                 <add-css-file></add-css-file>
@@ -97,75 +94,54 @@
 
 import AddCssFile from './components/AddCssFile.vue';
 import ViewCss from './components/ViewCss.vue';
+import Theme from './components/Theme.vue';
+import ParseTheme from './classes/parse-theme';
 
 export default {
-    name: 'App',    
+    name: 'App',
     components: {
         AddCssFile,
-        ViewCss
+        ViewCss,
+        Theme
     },
     mounted() {
         this.$store.dispatch("fetchSearchFiles");
     },
     data() {
         return {
-            cssTheme: `:root, [data-theme=default] {
-                --color-primary: #428bca;
-                --color-primary-light: #5697d0;
-                --color-primary-dark: #3071a9;
-                --color-on-primary: #fff;
-                --color-secondary: #f5f5f5;
-                --color-secondary-light: white;
-                --color-secondary-dark: gainsboro;
-                --color-on-secondary: #585858;
-                --color-tertiary: #9585bf;
-                --color-tertiary-light: #a496c8;
-                --color-tertiary-dark: #7864ad;
-                --color-on-tertiary: #fff;
-                --color-quaternary: #d6487e;
-                --color-quaternary-light: #db5d8d;
-                --color-quaternary-dark: #c02b64;
-                --color-on-quaternary: #fff;
-                --color-background: #fff;
-                --color-background-light: white;
-                --color-background-dark: #e6e6e6;
-                --color-on-background: #333333;
-                --color-success: #87b87f;
-                --color-success-light: #96c18f;
-                --color-success-dark: #68a65e;
-                --color-on-success: #fff;
-                --color-error: #d15b47;
-                --color-error-light: #d66d5b;
-                --color-error-dark: #b7422e;
-                --color-on-error: #fff;
-                --color-warning: #ffb752;
-                --color-warning-light: #ffc26c;
-                --color-warning-dark: #ffa21f;
-                --color-on-warning: #fff;
-            }`,
+            cssTheme: `:root,
+[data-theme=default] {
+    --theme-primary--bg: #428BCA;
+    --theme-primary--on: #FFFFFF;
+    --theme-primary--on-light: #585858;
+    --theme-primary--outline: #357ebd;
+    --theme-success--bg: #87b87f;
+    --theme-success--on: #FFFFFF;
+}`,
             resultMatch: [],
             result: '',
             tolerance: 0.05
         }
     },
-    methods: {        
+    methods: {
         process() {
-            this.cssText = `.label-pink.arrowed:before {
-                border-right-color: #d6487e;
-                -moz-border-right-colors: #d6487e;
-            }
+            // this.cssText = `.label-pink.arrowed:before {
+            //     border-right-color: #d6487e;
+            //     -moz-border-right-colors: #d6487e;
+            // }
 
-            .label-pink.arrowed-in:before {
-                border-color: #d6487e;
-                -moz-border-right-colors: #d6487e;
-            }`;
+            // .label-pink.arrowed-in:before {
+            //     border-color: #d6487e;
+            //     -moz-border-right-colors: #d6487e;
+            // }`;
 
-            const css = new Css(this.cssText);
+            // const css = new Css(this.cssText);
 
-            console.log(css);
+            // console.log(css);
 
 
-            // const parseTheme = new ParseTheme(this.cssTheme);
+            const parseTheme = new ParseTheme(this.cssTheme);
+            console.log(parseTheme);
             // parseTheme.tolerance = this.tolerance;
 
             // for (let i = 0; i < parsedCss.length; i++) {

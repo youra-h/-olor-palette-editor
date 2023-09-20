@@ -2,25 +2,17 @@
  * A class for parsing CSS text and extracting color variables.
  */
 export default class ParseTheme {
-    #lines = []
-    #tolerance = 0.05
-    colors = []
-
-    /**
-     * Creates a new instance of the ParseTheme class.
-     * @param {string} cssText - The CSS text to parse.
-     */
-    constructor(cssText) {
-        this.#lines = cssText.split('\n');
-        this.#parse();
-    }
+    lines = []
+    tolerance = 0.05
+    colors = {}
+    groups = {}
 
     /**
      * Gets the color comparison tolerance value.
      * @return {number} The color comparison tolerance value.
      */
     get tolerance() {
-        return this.#tolerance;
+        return this.tolerance;
     }
 
     /**
@@ -28,18 +20,23 @@ export default class ParseTheme {
      * @param {number} value - The new color comparison tolerance value.
      */
     set tolerance(value) {
-        this.#tolerance = value;
+        this.tolerance = value;
     }
 
     /**
      * Parses the CSS text and extracts color variables.
-     * @private
+     * @param {string} cssText - The CSS text to parse.
      */
-    #parse() {
+    parse(cssText) {
+        this.lines = cssText.split('\n');
+
+        this.colors = {}
+        this.groups = {}
+
         let variableRegex = /--[\w-]+:\s*[^;]+;/g;
 
-        for (let i = 0; i < this.#lines.length; i++) {
-            let match = this.#lines[i].match(variableRegex);
+        for (let i = 0; i < this.lines.length; i++) {
+            let match = this.lines[i].match(variableRegex);
 
             if (match) {
                 for (let j = 0; j < match.length; j++) {
@@ -47,7 +44,25 @@ export default class ParseTheme {
                     const key = parts[0].trim();
                     const value = parts[1].slice(0, -1).trim();
 
-                    this.colors.push({ key, value });
+                    // Разбиваем ключ на группу и тип
+                    const keyParts = key.match(/--theme-(\w+)--(\w+)/);
+                    if (keyParts) {
+                        const group = keyParts[1];
+                        const type = keyParts[2];
+
+                        // Добавляем в 'all'
+                        if (!this.colors['all']) this.colors['all'] = [];
+                        this.colors['all'].push({ key, value });
+
+                        // Добавляем в 'bg', 'on', 'outline' и т.д.
+                        if (!this.colors[type]) this.colors[type] = [];
+                        this.colors[type].push({ key, value });
+
+                        // Добавляем в 'primary', 'secondary' и т.д.
+                        if (!this.groups[group]) this.groups[group] = {};
+                        if (!this.groups[group][type]) this.groups[group][type] = [];
+                        this.groups[group][type].push({ key, value });
+                    }
                 }
             }
         }
@@ -86,6 +101,6 @@ export default class ParseTheme {
 
         let diff = c1.reduce((acc, cur, i) => acc + Math.abs(cur - c2[i]) / 255, 0) / 3;
 
-        return diff <= this.#tolerance;
+        return diff <= this.tolerance;
     }
 }

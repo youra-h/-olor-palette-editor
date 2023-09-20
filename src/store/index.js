@@ -2,15 +2,18 @@ import { createStore } from 'vuex';
 import axios from 'axios';
 import Files from '../classes/files.js';
 import Css from '../classes/css.js';
+import ParseTheme from '@/classes/parse-theme.js';
 
 const store = {
     state: {
         cssFiles: [],
         searchFiles: [],
+        theme: new ParseTheme()
     },
     getters: {
         cssFiles: state => state.cssFiles,
         searchFiles: state => state.searchFiles,
+        theme: state => state.theme
     },
     mutations: {
         addCssFile(state, cssFile) {
@@ -22,6 +25,9 @@ const store = {
         setSearchFiles(state, files) {
             state.searchFiles = files;
         },
+        setTheme(state, theme) {
+            state.theme = theme;
+        }
     },
     actions: {
         async addCssFile({ commit }, cssFile) {
@@ -85,8 +91,10 @@ const store = {
             }
 
             return combinedFiles;
+        },
+        parseTheme({ state }, text) {
+            state.theme.parse(text);
         }
-
     }
 };
 
