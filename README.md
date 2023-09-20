@@ -1,4 +1,4 @@
-# color-map
+# color-palette-editor
 
 ## Project setup
 ```
