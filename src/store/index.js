@@ -94,8 +94,9 @@ const store = {
         },
         parseTheme({ state }, text) {
             state.theme.parse(text);
-
-            console.log(state.theme);
+        },
+        setTolerance({ state }, value) {
+            state.theme.tolerance = value;
         }
     }
 };

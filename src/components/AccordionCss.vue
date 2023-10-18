@@ -3,8 +3,8 @@
         <div class="accordion-item" v-for="(color, colorIndex) in data.colors" :key="colorIndex">
             <accordion-css-header :parentId="data.style + colorIndex" :color="color"></accordion-css-header>
 
-            <accordion-css-collapse :parentId="data.style + colorIndex" :styleName="data.style" :accordionId="data.style + index"
-                :selectors="color.items"></accordion-css-collapse>
+            <accordion-css-collapse :parent-id="data.style + colorIndex" :style-name="data.style"
+                :accordion-id="data.style + index" :color="color"></accordion-css-collapse>
         </div>
     </div>
 </template>

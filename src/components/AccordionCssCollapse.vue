@@ -1,14 +1,14 @@
 <template>
     <div :id="'collapse-' + parentId" class="accordion-collapse collapse" :aria-labelledby="'heading-' + parentId"
         :data-bs-parent="'#accordion-' + accordionId">
-        <div class="accordion-body">
-            <div v-for="(selector, selectorIndex) in selectors" :key="selectorIndex">
+        <div class="accordion-body">            
+            <div v-for="(selector, selectorIndex) in color.items" :key="selectorIndex">
                 <div>
                     <div v-for="(item, itemIndex) in selector.names" :key="itemIndex"
                         class="names-block rounded-2 mb-3 small bg-light" :class="{ 'text-danger': item.remove }">
                         <div class="d-flex align-items-center highlight-toolbar p-1 pe-3 ps-3 border-bottom">
-                            <color-picker-select :color-options="getColors()" label="Выберите цвет" empty-option="Без цвета"
-                                @input="onSelectedColor" :selected="selected">
+                            <color-picker-select :color-options="theme.getColors(styleName)" label="Выберите цвет" empty-option="Без цвета"
+                                @input="onSelectedColor" :selected="theme.findColor(styleName, color.color)">
                             </color-picker-select>
 
                             <strong class="classes ms-3">
@@ -92,7 +92,7 @@ export default {
         parentId: String,
         accordionId: String,
         styleName: String,
-        selectors: Object,
+        color: Object,
     },
     computed: mapGetters(["theme"]),
     data() {
@@ -116,25 +116,7 @@ export default {
         },
         remove(item) {
             item.remove = !item.remove;
-        },
-        getColors() {
-            if (!this.theme.colors) {
-                return [];
-            }
-
-            switch (this.styleName) {
-                case 'common':
-                    return this.theme.colors.all;
-                case 'background':
-                    return this.theme.colors.bg;
-                case 'color':
-                    return this.theme.colors.on;
-                case 'border':
-                    return this.theme.colors.outline;
-                default:
-                    return this.theme.colors.all;
-            }
-        }
+        }        
     }
 };
 </script>

@@ -69,12 +69,38 @@ export default class ParseTheme {
     }
 
     /**
+     * Choose a list of colors corresponding to the name of the style
+     * @param {String} styleName 
+     * @returns {Array}
+     */
+    getColors(styleName) {
+        if (!this.colors.all) {
+            return [];
+        }
+
+        switch (styleName) {
+            case 'common':
+                return this.colors.all;
+            case 'background':
+                return this.colors.bg;
+            case 'color':
+                return this.colors.on;
+            case 'border':
+                return this.colors.outline;
+            default:
+                return this.colors.all;
+        }        
+    }
+
+    /**
      * Finds a color variable that matches the specified color.
+     * @param {String} styleName 
      * @param {string} color - The color to match.
      * @return {object} The color variable that matches the specified color, or undefined if no match is found.
      */
-    findColor(color) {
-        return this.colors.find(item => this.compareColors(color, item.value));
+    findColor(styleName, color) {
+        const colors = this.getColors(styleName);
+        return colors.find(item => this.compareColors(color, item.value));
     }
 
     /**
@@ -95,7 +121,7 @@ export default class ParseTheme {
                 return color.match(/\d+/g).map(Number);
             }
         }
-
+        
         let c1 = parseColor(color1);
         let c2 = parseColor(color2);
 
