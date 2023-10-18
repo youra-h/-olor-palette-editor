@@ -41,27 +41,27 @@ export default class ParseTheme {
             if (match) {
                 for (let j = 0; j < match.length; j++) {
                     const parts = match[j].split(':');
-                    const key = parts[0].trim();
+                    const name = parts[0].trim();
                     const value = parts[1].slice(0, -1).trim();
 
                     // Разбиваем ключ на группу и тип
-                    const keyParts = key.match(/--theme-(\w+)--(\w+)/);
+                    const keyParts = name.match(/--theme-(\w+)--(\w+)/);
                     if (keyParts) {
                         const group = keyParts[1];
                         const type = keyParts[2];
 
                         // Добавляем в 'all'
                         if (!this.colors['all']) this.colors['all'] = [];
-                        this.colors['all'].push({ key, value });
+                        this.colors['all'].push({ name, value });
 
                         // Добавляем в 'bg', 'on', 'outline' и т.д.
                         if (!this.colors[type]) this.colors[type] = [];
-                        this.colors[type].push({ key, value });
+                        this.colors[type].push({ name, value });
 
                         // Добавляем в 'primary', 'secondary' и т.д.
                         if (!this.groups[group]) this.groups[group] = {};
                         if (!this.groups[group][type]) this.groups[group][type] = [];
-                        this.groups[group][type].push({ key, value });
+                        this.groups[group][type].push({ name, value });
                     }
                 }
             }

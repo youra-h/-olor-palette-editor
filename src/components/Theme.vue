@@ -1,10 +1,11 @@
 <template>
-    <div>
+    <div class="col-6 d-flex flex-column h-100">
         <label for="colors-input">Основные цвета:</label>
+        <textarea id="colors-input" v-model.trim="text" class="form-control flex-grow-1" rows="20" @input="onInput"></textarea>
+    </div>
 
-        <textarea id="colors-input" v-model.trim="text" class="form-control mb-2" rows="20" @input="onInput"></textarea>
-
-        <div v-for="(group, groupName) in theme.groups" :key="groupName" class="col-3">
+    <div class="col-6">
+        <div v-for="(group, groupName) in theme.groups" :key="groupName">
             <h3>{{ groupName }}: {{ group.bg[0].value }}</h3>
 
             <div v-for="(onColor, index) in group.on" :key="'on-' + index">

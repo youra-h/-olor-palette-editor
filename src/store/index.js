@@ -94,6 +94,8 @@ const store = {
         },
         parseTheme({ state }, text) {
             state.theme.parse(text);
+
+            console.log(state.theme);
         }
     }
 };

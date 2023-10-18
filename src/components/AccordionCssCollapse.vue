@@ -7,7 +7,11 @@
                     <div v-for="(item, itemIndex) in selector.names" :key="itemIndex"
                         class="names-block rounded-2 mb-3 small bg-light" :class="{ 'text-danger': item.remove }">
                         <div class="d-flex align-items-center highlight-toolbar p-1 pe-3 ps-3 border-bottom">
-                            <strong class="classes">
+                            <color-picker-select :color-options="getColors()" label="Выберите цвет" empty-option="Без цвета"
+                                @input="onSelectedColor" :selected="selected">
+                            </color-picker-select>
+
+                            <strong class="classes ms-3">
                                 {{ item.text }}
                             </strong>
                             <div class="d-flex ms-auto">
@@ -77,13 +81,31 @@
 
 
 <script>
+import ColorPickerSelect from './ColorPickerSelect.vue';
+import { mapGetters } from "vuex";
+
 export default {
+    components: {
+        ColorPickerSelect,
+    },
     props: {
         parentId: String,
         accordionId: String,
+        styleName: String,
         selectors: Object,
     },
+    computed: mapGetters(["theme"]),
+    data() {
+        return {
+            // colors: ,
+            selected: null,
+        }
+    },
     methods: {
+        onSelectedColor(color) {
+            // this.selectedColor = color;
+            console.log(color);
+        },
         async searchFiles(item) {
             item.findFiles = null;
 
@@ -95,7 +117,25 @@ export default {
         remove(item) {
             item.remove = !item.remove;
         },
-    },
+        getColors() {
+            if (!this.theme.colors) {
+                return [];
+            }
+
+            switch (this.styleName) {
+                case 'common':
+                    return this.theme.colors.all;
+                case 'background':
+                    return this.theme.colors.bg;
+                case 'color':
+                    return this.theme.colors.on;
+                case 'border':
+                    return this.theme.colors.outline;
+                default:
+                    return this.theme.colors.all;
+            }
+        }
+    }
 };
 </script>
 

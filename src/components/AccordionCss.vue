@@ -3,10 +3,8 @@
         <div class="accordion-item" v-for="(color, colorIndex) in data.colors" :key="colorIndex">
             <accordion-css-header :parentId="data.style + colorIndex" :color="color"></accordion-css-header>
 
-            <AccordionCssCollapse
-                :parentId="data.style + colorIndex"
-                :accordionId="data.style + index"
-                :selectors="color.items" />
+            <accordion-css-collapse :parentId="data.style + colorIndex" :styleName="data.style" :accordionId="data.style + index"
+                :selectors="color.items"></accordion-css-collapse>
         </div>
     </div>
 </template>
@@ -15,11 +13,12 @@
 import AccordionCssHeader from './AccordionCssHeader.vue';
 import AccordionCssCollapse from './AccordionCssCollapse.vue';
 
+
 export default {
     components: {
-    AccordionCssHeader,
-    AccordionCssCollapse
-},
+        AccordionCssHeader,
+        AccordionCssCollapse
+    },
     props: {
         index: Number,
         data: Object,

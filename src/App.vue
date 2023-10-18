@@ -21,10 +21,10 @@
             </nav>
 
             <main class="col-md-8 ms-sm-auto col-lg-10 px-md-4">
-                <div class="tab-content" id="myTabContent">
+                <div class="tab-content vh-100" id="myTabContent">
                     <!-- Theme -->
-                    <div class="tab-pane fade show active" id="theme" role="tabpanel" aria-labelledby="theme-tab">
-                        <div class="row">
+                    <div class="tab-pane fade show active h-100" id="theme" role="tabpanel" aria-labelledby="theme-tab">
+                        <div class="row h-100">                            
                             <theme></theme>
                         </div>
                     </div>
@@ -120,10 +120,10 @@ export default {
 }`,
             resultMatch: [],
             result: '',
-            tolerance: 0.05
+            tolerance: 0.05,
         }
     },
-    methods: {
+    methods: {        
         process() {
             // this.cssText = `.label-pink.arrowed:before {
             //     border-right-color: #d6487e;
