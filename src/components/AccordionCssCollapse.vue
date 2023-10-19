@@ -53,8 +53,8 @@
                             </div>
                         </div>
                         <transition name="fade" mode="out-in">
-                            <div class="position-relative" v-if="showSearchClasses">
-                                <button type="button" class="btn-close position-absolute" style="top: 5px; right: 5px; z-index: 10;" aria-label="Close" @click="showSearchClasses = !showSearchClasses"></button>
+                            <div class="position-relative" v-if="item.findFiles">
+                                <button type="button" class="btn-close position-absolute" style="top: 5px; right: 5px; z-index: 10;" aria-label="Close" @click="item.findFiles = undefined"></button>
                                 <div class="alert alert-danger border-bottom-0 border-start-0 border-end-0" role="alert"
                                     v-if="item.findFiles && item.findFiles.length === 0">
                                     Не найден                                    
@@ -102,7 +102,6 @@ export default {
         return {
             // colors: ,
             selected: null,
-            showSearchClasses: false
         }
     },
     methods: {
