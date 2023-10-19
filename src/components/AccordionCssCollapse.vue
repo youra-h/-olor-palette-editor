@@ -53,20 +53,23 @@
                             </div>
                         </div>
                         <transition name="fade" mode="out-in">
-                            <div class="alert alert-danger border-bottom-0 border-start-0 border-end-0" role="alert"
-                                v-if="item.findFiles && item.findFiles.length === 0">
-                                Не найден
-                            </div>
-                            <div v-else>
-                                <div v-for="(item, fileIndex) in item.findFiles" :key="fileIndex"
-                                    class="alert border-0 pt-3 pb-3 border-bottom-0 border-start-0 border-end-0"
-                                    :class="{ 'alert-success': item.type === 'exact', 'alert-warning': item.type === 'inexact' }"
-                                    role="alert">
-                                    <p class="small"><b>{{ item.file }}</b></p>
-                                    <div class="d-flex flex-column">
-                                        <div v-for="(line, lineIndex) in item.lines" :key="lineIndex" class="d-flex">
-                                            <div class="me-3">{{ line.num }}:</div>
-                                            <div class="flex-grow-1">{{ line.text }}</div>
+                            <div class="position-relative" v-if="showSearchClasses">
+                                <button type="button" class="btn-close position-absolute" style="top: 5px; right: 5px; z-index: 10;" aria-label="Close" @click="showSearchClasses = !showSearchClasses"></button>
+                                <div class="alert alert-danger border-bottom-0 border-start-0 border-end-0" role="alert"
+                                    v-if="item.findFiles && item.findFiles.length === 0">
+                                    Не найден                                    
+                                </div>
+                                <div v-else>
+                                    <div v-for="(item, fileIndex) in item.findFiles" :key="fileIndex"
+                                        class="alert border-0 pt-3 pb-3 border-bottom-0 border-start-0 border-end-0"
+                                        :class="{ 'alert-success': item.type === 'exact', 'alert-warning': item.type === 'inexact' }"
+                                        role="alert">
+                                        <p class="small"><b>{{ item.file }}</b></p>
+                                        <div class="d-flex flex-column">
+                                            <div v-for="(line, lineIndex) in item.lines" :key="lineIndex" class="d-flex">
+                                                <div class="me-3">{{ line.num }}:</div>
+                                                <div class="flex-grow-1">{{ line.text }}</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -99,6 +102,7 @@ export default {
         return {
             // colors: ,
             selected: null,
+            showSearchClasses: false
         }
     },
     methods: {
@@ -111,6 +115,7 @@ export default {
 
             setTimeout(async () => {
                 const response = await this.$store.dispatch('findClasses', item.classes);
+                this.showSearchClasses = true;
                 item.findFiles = response;
             }, 300);
         },
