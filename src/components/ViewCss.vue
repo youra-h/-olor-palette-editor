@@ -43,7 +43,7 @@ export default {
     components: {
         TabStyles,
     },
-    computed: mapGetters(["cssFiles"])    
+    computed: mapGetters(["cssFiles"]),    
 }
 
 </script>

@@ -64,6 +64,11 @@ export default {
         onClickOutside() {
             this.active = false;
         }
+    },
+    mounted() {
+        if (this._selected) {
+            this.setColor(this._selected);
+        }
     }
 };
 </script>

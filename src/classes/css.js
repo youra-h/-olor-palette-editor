@@ -18,7 +18,7 @@ export default class Css {
             const temp = this.groupByStyle(style, strict);
 
             if (temp.length) {
-                style = style.replace(/-./g, (match) => match[1].toUpperCase())
+                // style = style.replace(/-./g, (match) => match[1].toUpperCase())
 
                 this.groups.push({
                     style,

@@ -1,14 +1,15 @@
 <template>
     <div :id="'collapse-' + parentId" class="accordion-collapse collapse" :aria-labelledby="'heading-' + parentId"
         :data-bs-parent="'#accordion-' + accordionId">
-        <div class="accordion-body">            
+        <div class="accordion-body">
             <div v-for="(selector, selectorIndex) in color.items" :key="selectorIndex">
                 <div>
                     <div v-for="(item, itemIndex) in selector.names" :key="itemIndex"
                         class="names-block rounded-2 mb-3 small bg-light" :class="{ 'text-danger': item.remove }">
                         <div class="d-flex align-items-center highlight-toolbar p-1 pe-3 ps-3 border-bottom">
-                            <color-picker-select :color-options="theme.getColors(styleName)" label="Выберите цвет" empty-option="Без цвета"
-                                @input="onSelectedColor" :selected="theme.findColor(styleName, color.color)">
+                            <color-picker-select :color-options="theme.getColors(styleName)" label="Выберите цвет"
+                                empty-option="Без цвета" @input="onSelectedColor(selector, $event)"
+                                :selected="theme.findColor(styleName, color.color)">
                             </color-picker-select>
 
                             <strong class="classes ms-3">
@@ -48,16 +49,19 @@
                             <div class="d-flex flex-column">
                                 <div class="d-flex" v-for="(style, styleIndex) in selector.styles" :key="styleIndex">
                                     <div class="me-3 opacity-60">{{ style.line }}:</div>
-                                    <div class="flex-grow-1">{{ style.name }}: {{ style.value }}</div>
+                                    <div class="flex-grow-1">{{ style.name }}: <span :class="{'old-value': style.newValue}">{{ style.value }}</span><span v-if="style.newValue" class="new-value">var({{ style.newValue }})</span></div>
                                 </div>
                             </div>
+
                         </div>
                         <transition name="fade" mode="out-in">
                             <div class="position-relative" v-if="item.findFiles">
-                                <button type="button" class="btn-close position-absolute" style="top: 5px; right: 5px; z-index: 10;" aria-label="Close" @click="item.findFiles = undefined"></button>
+                                <button type="button" class="btn-close position-absolute"
+                                    style="top: 5px; right: 5px; z-index: 10;" aria-label="Close"
+                                    @click="item.findFiles = undefined"></button>
                                 <div class="alert alert-danger border-bottom-0 border-start-0 border-end-0" role="alert"
                                     v-if="item.findFiles && item.findFiles.length === 0">
-                                    Не найден                                    
+                                    Не найден
                                 </div>
                                 <div v-else>
                                     <div v-for="(item, fileIndex) in item.findFiles" :key="fileIndex"
@@ -105,9 +109,24 @@ export default {
         }
     },
     methods: {
-        onSelectedColor(color) {
-            // this.selectedColor = color;
-            console.log(color);
+        onSelectedColor(selector, value) {
+            const strict = this.styleName === 'color';
+
+            selector.styles.map(item => {
+                if (strict ? item.name === this.styleName : item.name.includes(this.styleName)) {
+                    if (value) {
+                        item.newValue = value.name;
+                        item.color.newValue = value.name;
+                    } else {
+                        item.newValue = undefined;
+                        item.color.newValue = undefined;
+                    }                    
+                }
+
+                return item;
+            });
+
+            console.log(selector, value);
         },
         async searchFiles(item) {
             item.findFiles = null;
@@ -120,7 +139,7 @@ export default {
         },
         remove(item) {
             item.remove = !item.remove;
-        }        
+        }
     }
 };
 </script>
@@ -211,4 +230,15 @@ button.icon:hover {
 .accordion-button::after {
     --bs-accordion-btn-icon-width: 1 rem;
 }
+.old-value {
+    text-decoration: line-through;
+}
+
+.new-value {
+    margin-left: 5px;
+    padding: 0 5px;
+    background-color: forestgreen;
+    color: white;
+}
+
 </style>
