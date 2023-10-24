@@ -32,7 +32,7 @@
                         <div class="col-6">
                             <tab-styles :parentId="item.fileName" :data="item.css.groups"></tab-styles>
                         </div>
-                        <div class="col-6">
+                        <div class="col-6 d-none d-md-block">
                             <result-css-simple :parentId="item.fileName" :data="item"></result-css-simple>
                         </div>
                     </div>
