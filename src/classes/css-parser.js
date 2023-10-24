@@ -704,7 +704,7 @@ class Style {
         this.value = '';
         this.newValue = undefined;
 
-        this.observers = [];
+        this._observers = [];
 
         this.parse();
         this.parseColor();
@@ -717,7 +717,7 @@ class Style {
     set newValue(value) {
         if (this._newValue != value) {
             this._newValue = value;
-            this.notifyAll();
+            this.notifyNewValue();
         }
     }
 
@@ -747,11 +747,11 @@ class Style {
     }
 
     addObserver(observer) {
-        this.observers.push(observer);
+        this._observers.push(observer);
     }
 
-    notifyAll() {
-        for (let observer of this.observers) {
+    notifyNewValue() {
+        for (let observer of this._observers) {
             observer.update(this);
         }
     }
@@ -760,15 +760,18 @@ class Style {
 class Selector {
     constructor() {
         this._text = '';
+        this.line = 0;
         this.names = [];
         this.styles = [];
         this.endBlock = false;
+        this._remove = false;
+        this._observers = [];
     }
 
     /**
      * @param {string} value
      */
-    set text(value) {
+    setText(value, line) {
         if (value.endsWith('{')) {
             value = value.slice(0, -1).trim();
         }
@@ -776,6 +779,10 @@ class Selector {
         if (value.length === 0) return;
 
         this._text += value;
+
+        if (this.line === 0) {
+            this.line = line;
+        }
 
         const names = this._text.split(',').map(part => part.trim());
 
@@ -790,6 +797,17 @@ class Selector {
 
     get text() {
         return this._text;
+    }
+
+    get remove() {
+        return this._remove;
+    }
+
+    set remove(value) {
+        if (this._remove != value) {
+            this._remove = value;
+            this.notifyRemove();
+        }
     }
 
     /**
@@ -819,6 +837,16 @@ class Selector {
         }
 
         return classes;
+    }
+
+    addObserver(observer) {
+        this._observers.push(observer);
+    }
+
+    notifyRemove() {
+        for (let observer of this._observers) {
+            observer.remove(this);
+        }
     }
 }
 
@@ -890,7 +918,7 @@ class CssParser {
             } else {
                 if (line.endsWith('}')) continue;
 
-                currentSelector.text = line;
+                currentSelector.setText(line, i + 1);
             }
 
             if (line.endsWith('{')) {

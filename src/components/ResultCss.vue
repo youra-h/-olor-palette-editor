@@ -12,9 +12,7 @@
                 <div v-for="(item, index) in cssFiles" :key="index" class="tab-pane fade h-100"
                     :class="{ 'show active': index === 0 }" :id="`v-pills-${item.fileName}`" role="tabpanel"
                     :aria-labelledby="`v-pills-${item.fileName}-tab`">
-                    <textarea id="output" class="form-control h-100" rows="20">
-                        {{ item.text.join('\n').trim() }}
-                    </textarea>
+                    <textarea id="output" class="form-control h-100" rows="20">{{ item.getText() }}</textarea>
                 </div>
             </div>
         </div>

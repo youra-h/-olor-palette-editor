@@ -153,7 +153,6 @@ export default {
         },
         remove(selector) {
             selector.remove = !selector.remove;
-            console.log(selector);
         }
     }
 };
