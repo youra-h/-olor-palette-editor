@@ -702,9 +702,23 @@ class Style {
         this.line = line;
         this.name = '';
         this.value = '';
+        this.newValue = undefined;
+
+        this.observers = [];
 
         this.parse();
         this.parseColor();
+    }
+
+    get newValue() {
+        return this._newValue;
+    }
+
+    set newValue(value) {
+        if (this._newValue != value) {
+            this._newValue = value;
+            this.notifyAll();
+        }
     }
 
     /**
@@ -729,6 +743,16 @@ class Style {
             if (color) {
                 this.color = new Color(color);
             }
+        }
+    }
+
+    addObserver(observer) {
+        this.observers.push(observer);
+    }
+
+    notifyAll() {
+        for (let observer of this.observers) {
+            observer.update(this);
         }
     }
 }
@@ -760,7 +784,7 @@ class Selector {
                 text,
                 'classes': Selector.parseCssClasses(text),
                 findFiles: undefined
-            }            
+            }
         });
     }
 
@@ -861,7 +885,7 @@ class CssParser {
                     currentSelector.end();
                     isStyle = false;
                 } else {
-                    currentSelector.addStyle(line, i);
+                    currentSelector.addStyle(line, i + 1);
                 }
             } else {
                 if (line.endsWith('}')) continue;

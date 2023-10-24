@@ -41,8 +41,7 @@
                     <!-- Edit -->
                     <div class="tab-pane fade h-100" id="edit" role="tabpanel" aria-labelledby="edit-tab">
                         <div class="row h-100">
-                            <textarea id="output" v-model.trim="text" class="form-control" rows="20">
-                            </textarea>
+                            <result-css></result-css>
                         </div>
                     </div>
                 </div>
@@ -55,6 +54,7 @@
 
 import AddCssFile from './components/AddCssFile.vue';
 import ViewCss from './components/ViewCss.vue';
+import ResultCss from './components/ResultCss.vue';
 import Theme from './components/Theme.vue';
 
 export default {
@@ -62,6 +62,7 @@ export default {
     components: {
         AddCssFile,
         ViewCss,
+        ResultCss,
         Theme
     },
     mounted() {

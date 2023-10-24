@@ -4,8 +4,7 @@
         <div class="accordion-body">
             <div v-for="(selector, selectorIndex) in color.items" :key="selectorIndex">
                 <div>
-                    <div v-for="(item, itemIndex) in selector.names" :key="itemIndex"
-                        class="names-block rounded-2 mb-3 small bg-light" :class="{ 'text-danger': item.remove }">
+                    <div class="names-block rounded-2 mb-3 small bg-light" :class="{ 'text-danger': selector.remove }">
                         <div class="d-flex align-items-center highlight-toolbar p-1 pe-3 ps-3 border-bottom">
                             <color-picker-select :color-options="theme.getColors(styleName)" label="Выберите цвет"
                                 empty-option="Без цвета" @input="onSelectedColor(selector, $event)"
@@ -13,14 +12,17 @@
                             </color-picker-select>
 
                             <strong class="classes ms-3">
-                                {{ item.text }}
+                                <div v-for="(name, namesIndex) in selector.names" :key="namesIndex"
+                                    :class="{ 'text-danger': name.findClass === false, 'text-success': name.findClass === true }">
+                                    {{ name.text }}
+                                </div>
                             </strong>
                             <div class="d-flex ms-auto">
                                 <!-- Spinner -->
-                                <div v-if="item.findFiles === null" class="spinner-border" role="status">
+                                <div v-if="selector.findFiles === null" class="spinner-border" role="status">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
-                                <button v-else type="button" class="icon text-nowrap" @click.stop="searchFiles(item)">
+                                <button v-else type="button" class="icon text-nowrap" @click.stop="searchFiles(selector)">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-search" viewBox="0 0 16 16">
                                         <path
@@ -28,8 +30,8 @@
                                     </svg>
                                 </button>
 
-                                <button type="button" class="icon text-nowrap" @click.stop="remove(item)">
-                                    <svg v-if="item.remove" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                <button type="button" class="icon text-nowrap" @click.stop="remove(selector)">
+                                    <svg v-if="selector.remove" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
                                         <path fill-rule="evenodd"
                                             d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z" />
@@ -49,22 +51,24 @@
                             <div class="d-flex flex-column">
                                 <div class="d-flex" v-for="(style, styleIndex) in selector.styles" :key="styleIndex">
                                     <div class="me-3 opacity-60">{{ style.line }}:</div>
-                                    <div class="flex-grow-1">{{ style.name }}: <span :class="{'old-value': style.newValue}">{{ style.value }}</span><span v-if="style.newValue" class="new-value">var({{ style.newValue }})</span></div>
+                                    <div class="flex-grow-1">{{ style.name }}: <span
+                                            :class="{ 'old-value': style.newValue }">{{ style.value }}</span><span
+                                            v-if="style.newValue" class="new-value">{{ style.newValue }}</span></div>
                                 </div>
                             </div>
 
                         </div>
                         <transition name="fade" mode="out-in">
-                            <div class="position-relative" v-if="item.findFiles">
+                            <div class="position-relative" v-if="selector.findFiles">
                                 <button type="button" class="btn-close position-absolute"
                                     style="top: 5px; right: 5px; z-index: 10;" aria-label="Close"
-                                    @click="item.findFiles = undefined"></button>
+                                    @click="selector.findFiles = undefined"></button>
                                 <div class="alert alert-danger border-bottom-0 border-start-0 border-end-0" role="alert"
-                                    v-if="item.findFiles && item.findFiles.length === 0">
+                                    v-if="selector.findFiles && selector.findFiles.length === 0">
                                     Не найден
                                 </div>
                                 <div v-else>
-                                    <div v-for="(item, fileIndex) in item.findFiles" :key="fileIndex"
+                                    <div v-for="(item, fileIndex) in selector.findFiles" :key="fileIndex"
                                         class="alert border-0 pt-3 pb-3 border-bottom-0 border-start-0 border-end-0"
                                         :class="{ 'alert-success': item.type === 'exact', 'alert-warning': item.type === 'inexact' }"
                                         role="alert">
@@ -112,33 +116,44 @@ export default {
         onSelectedColor(selector, value) {
             const strict = this.styleName === 'color';
 
-            selector.styles.map(item => {
+            selector.styles.map(item => {                
                 if (strict ? item.name === this.styleName : item.name.includes(this.styleName)) {
                     if (value) {
-                        item.newValue = value.name;
                         item.color.newValue = value.name;
+                        item.newValue = item.value.replace(item.color.value, `var(${value.name})`);                        
                     } else {
-                        item.newValue = undefined;
                         item.color.newValue = undefined;
-                    }                    
+                        item.newValue = undefined;                        
+                    }
                 }
 
                 return item;
             });
-
-            console.log(selector, value);
         },
-        async searchFiles(item) {
-            item.findFiles = null;
+        async searchFiles(selector) {
+            selector.findFiles = null;
 
-            setTimeout(async () => {
-                const response = await this.$store.dispatch('findClasses', item.classes);
-                this.showSearchClasses = true;
-                item.findFiles = response;
-            }, 300);
+            let findFiles = [];
+
+            let promises = selector.names.map(item => {
+                return this.$store.dispatch('findClasses', item.classes)
+                    .then(response => {
+                        item.findClass = response.length > 0;
+                        return response;
+                    });
+            });
+
+            Promise.all(promises)
+                .then(results => {
+                    for (let result of results) {
+                        findFiles = findFiles.concat(result);
+                    }
+                    selector.findFiles = findFiles;
+                });
         },
-        remove(item) {
-            item.remove = !item.remove;
+        remove(selector) {
+            selector.remove = !selector.remove;
+            console.log(selector);
         }
     }
 };
@@ -230,6 +245,7 @@ button.icon:hover {
 .accordion-button::after {
     --bs-accordion-btn-icon-width: 1 rem;
 }
+
 .old-value {
     text-decoration: line-through;
 }
@@ -240,5 +256,4 @@ button.icon:hover {
     background-color: forestgreen;
     color: white;
 }
-
 </style>

@@ -1,7 +1,7 @@
 import { createStore } from 'vuex';
 import axios from 'axios';
 import Files from '../classes/files.js';
-import Css from '../classes/css.js';
+import Item from '../classes/item.js';
 import ParseTheme from '@/classes/parse-theme.js';
 
 const store = {
@@ -33,12 +33,7 @@ const store = {
         async addCssFile({ commit }, cssFile) {
             const text = await Files.getText(cssFile);
 
-            const item = {
-                file: cssFile,
-                fileName: cssFile.name,
-                text,
-                css: new Css(text)
-            }
+            const item = new Item(cssFile, text);
 
             commit('addCssFile', item);
         },
@@ -93,7 +88,7 @@ const store = {
             return combinedFiles;
         },
         parseTheme({ state }, text) {
-            state.theme.parse(text);
+            state.theme.parse(text);            
         },
         setTolerance({ state }, value) {
             state.theme.tolerance = value;
