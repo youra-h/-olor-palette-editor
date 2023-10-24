@@ -116,14 +116,14 @@ export default {
         onSelectedColor(selector, value) {
             const strict = this.styleName === 'color';
 
-            selector.styles.map(item => {                
+            selector.styles.map(item => {
                 if (strict ? item.name === this.styleName : item.name.includes(this.styleName)) {
                     if (value) {
                         item.color.newValue = value.name;
-                        item.newValue = item.value.replace(item.color.value, `var(${value.name})`);                        
+                        item.newValue = item.value.replace(item.color.value, `var(${value.name})`);
                     } else {
                         item.color.newValue = undefined;
-                        item.newValue = undefined;                        
+                        item.newValue = undefined;
                     }
                 }
 

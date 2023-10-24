@@ -28,7 +28,14 @@
                     role="tabpanel"
                     :aria-labelledby="`v-pills-${item.fileName}-tab`"
                 >
-                    <tab-styles :parentId="item.fileName" :data="item.css.groups"></tab-styles>
+                    <div class="row">
+                        <div class="col-6">
+                            <tab-styles :parentId="item.fileName" :data="item.css.groups"></tab-styles>
+                        </div>
+                        <div class="col-6">
+                            <result-css-simple :parentId="item.fileName" :data="item"></result-css-simple>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -37,11 +44,13 @@
   
 <script>
 import TabStyles from './TabStyles.vue';
+import ResultCssSimple from './ResultCssSimple.vue';
 import { mapGetters } from "vuex";
 
 export default {
     components: {
         TabStyles,
+        ResultCssSimple
     },
     computed: mapGetters(["cssFiles"]),    
 }

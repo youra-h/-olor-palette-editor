@@ -6,7 +6,7 @@ export default class Item {
         this.fileName = cssFile.name;
         this.text = text.split('\n').map(line => {
             return {
-                text: line,
+                text: line,                
                 remove: false
             }
         });
@@ -23,7 +23,7 @@ export default class Item {
     update(style) {
         const newValue = `var(${style.color.newValue})`;
 
-        this.text[style.line - 1].text = this.text[style.line - 1].text.replace(style.color.value, newValue);
+        this.text[style.line - 1].newText = this.text[style.line - 1].text.replace(style.color.value, newValue);
     }
 
     remove(selector) {
@@ -38,6 +38,9 @@ export default class Item {
     }
 
     getText() {
-        return this.text.map(line => line.remove ? '' : line.text).join('\n').trim();
+        return this.text.map(line => {
+            const text = line.newText ? line.newText : line.text;
+            return line.remove ? '' : text;
+        }).join('\n').trim();
     }
 }

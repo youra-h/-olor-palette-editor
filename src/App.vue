@@ -72,7 +72,7 @@ export default {
         return {
             text: 'output'
         }
-    },    
+    },
 }
 </script>
 
