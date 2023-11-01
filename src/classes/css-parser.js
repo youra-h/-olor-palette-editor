@@ -726,6 +726,7 @@ class Style {
     */
     parse() {
         let parts = this._text.split(':').map(part => part.trim());
+        // console.log(parts);
         this.name = parts[0];
         if (!parts[1]) {
             // eslint-disable-next-line no-debugger

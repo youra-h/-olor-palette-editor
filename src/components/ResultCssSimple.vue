@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="height: 100%;">
         <textarea class="form-control h-100" rows="20">{{ data.getText() }}</textarea>
     </div>
 </template>
