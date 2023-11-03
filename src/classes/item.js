@@ -6,7 +6,7 @@ export default class Item {
         this.fileName = cssFile.name;
         this.text = text.split('\n').map(line => {
             return {
-                text: line,                
+                text: line,
                 remove: false
             }
         });
@@ -28,7 +28,7 @@ export default class Item {
 
     remove(selector) {
         console.log(selector);
-        for (let i = selector.line - 1; i < this.text.length; i++) {            
+        for (let i = selector.line - 1; i < this.text.length; i++) {
             this.text[i].remove = selector.remove;
 
             if (this.text[i].text.includes('}')) {
@@ -38,9 +38,25 @@ export default class Item {
     }
 
     getText() {
-        return this.text.map(line => {
+        // return this.text.map(line => {
+        //     const text = line.newText ? line.newText : line.text;
+        //     return line.remove ? '' : text;
+        // }).join('\n').trim();
+
+        let result = '';
+        let wasRemoved = false;
+        for (let line of this.text) {
             const text = line.newText ? line.newText : line.text;
-            return line.remove ? '' : text;
-        }).join('\n').trim();
+            if (line.remove) {
+                wasRemoved = true;
+            } else if (wasRemoved && text.trim() === '') {
+                wasRemoved = false;
+            } else {
+                result += text + '\n';
+                wasRemoved = false;
+            }
+        }
+
+        return result.trim();
     }
 }
