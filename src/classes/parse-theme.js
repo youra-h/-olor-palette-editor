@@ -103,6 +103,11 @@ export default class ParseTheme {
         return colors.find(item => this.compareColors(color, item.value));
     }
 
+    findColorByName(styleName, name) {
+        const colors = this.getColors(styleName);
+        return colors.find(item => item.name === name);
+    }
+
     /**
      * Compares two colors and returns true if they are within the color comparison tolerance.
      * @param {string} color1 - The first color to compare.

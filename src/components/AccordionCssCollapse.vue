@@ -6,9 +6,9 @@
                 <div>
                     <div class="names-block rounded-2 mb-3 small bg-light" :class="{ 'text-danger': selector.remove }">
                         <div class="d-flex align-items-center highlight-toolbar p-1 pe-3 ps-3 border-bottom">
-                            <color-picker-select :color-options="theme.getColors(styleName)" label="Выберите цвет"
+                            <color-picker-select :color-options="listColors()" label="Выберите цвет"
                                 empty-option="Без цвета" @input="onSelectedColor(selector, $event)"
-                                :selected="theme.findColor(styleName, color.color)">
+                                :selected="findColor(color.color)">
                             </color-picker-select>
 
                             <strong class="classes ms-3">
@@ -105,11 +105,12 @@ export default {
         styleName: String,
         color: Object,
     },
-    computed: mapGetters(["theme"]),
+    computed: mapGetters(["theme", "matchColor"]),
     data() {
         return {
             // colors: ,
             selected: null,
+            except: ['background-clip'],
         }
     },
     methods: {
@@ -117,18 +118,44 @@ export default {
             const strict = this.styleName === 'color';
 
             selector.styles.map(item => {
-                if (strict ? item.name === this.styleName : item.name.includes(this.styleName)) {
-                    if (value) {
-                        item.color.newValue = value.name;
-                        item.newValue = item.value.replace(item.color.value, `var(${value.name})`);
+
+                if (strict ? item.name === this.styleName : item.name.includes(this.styleName) && !this.except.includes(item.name)) {
+                    // Попытка на тот же цвет повесить разные переменные закончаться не удачно
+                    if (!this.matchColor.findMatchVarAndColor(this.styleName, item.color.hex, value.name)) {
+                        alert(`Для данного цвета уже зарегистрирована переменная: ${value.name}`);
                     } else {
-                        item.color.newValue = undefined;
-                        item.newValue = undefined;
+                        if (value) {
+                            item.color.newValue = value.name;
+                            item.newValue = item.value.replace(item.color.value, `var(${value.name})`);
+                            this.matchColor.add(this.styleName, item);
+                        } else {
+                            item.color.newValue = undefined;
+                            item.newValue = undefined;
+                            this.matchColor.remove(this.styleName, item);
+                        }
                     }
                 }
 
                 return item;
             });
+        },
+        listColors() {
+            return this.theme.getColors(this.styleName);
+        },
+        findColor(color) {
+            const find = this.theme.findColor(this.styleName, color);
+
+            if (find) {
+                return find;
+            }
+
+            const match = this.matchColor.getValue(this.styleName, color);
+
+            if (match) {
+                return this.theme.findColorByName(this.styleName, match);
+            }
+
+            return undefined;
         },
         async searchFiles(selector) {
             selector.findFiles = null;

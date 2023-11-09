@@ -3,17 +3,20 @@ import axios from 'axios';
 import Files from '../classes/files.js';
 import Item from '../classes/item.js';
 import ParseTheme from '@/classes/parse-theme.js';
+import MatchColor from '@/classes/match-color.js';
 
 const store = {
     state: {
         cssFiles: [],
         searchFiles: [],
-        theme: new ParseTheme()
+        theme: new ParseTheme(),
+        matchColor: new MatchColor(),
     },
     getters: {
         cssFiles: state => state.cssFiles,
         searchFiles: state => state.searchFiles,
-        theme: state => state.theme
+        theme: state => state.theme,
+        matchColor: state => state.matchColor,
     },
     mutations: {
         addCssFile(state, cssFile) {
@@ -27,7 +30,7 @@ const store = {
         },
         setTheme(state, theme) {
             state.theme = theme;
-        }
+        },        
     },
     actions: {
         async addCssFile({ commit }, cssFile) {
@@ -88,10 +91,13 @@ const store = {
             return combinedFiles;
         },
         parseTheme({ state }, text) {
-            state.theme.parse(text);            
+            state.theme.parse(text);
         },
         setTolerance({ state }, value) {
             state.theme.tolerance = value;
+        },
+        addMatchColor({ state }, color, value) {
+            state.matchColor.add(color, value);
         }
     }
 };
