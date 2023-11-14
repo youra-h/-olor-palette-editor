@@ -45,7 +45,7 @@ export default class ParseTheme {
                     const value = parts[1].slice(0, -1).trim();
 
                     // Разбиваем ключ на группу и тип
-                    const keyParts = name.match(/--theme-(\w+)--(\w+)/);
+                    const keyParts = name.match(/--theme-(\w+--\w+)-(\w+)/);
                     if (keyParts) {
                         const group = keyParts[1];
                         const type = keyParts[2];
@@ -54,7 +54,7 @@ export default class ParseTheme {
                         if (!this.colors['all']) this.colors['all'] = [];
                         this.colors['all'].push({ name, value });
 
-                        // Добавляем в 'bg', 'on', 'outline' и т.д.
+                        // Добавляем в 'bg', 'on', 'border' и т.д.
                         if (!this.colors[type]) this.colors[type] = [];
                         this.colors[type].push({ name, value });
 
@@ -86,10 +86,10 @@ export default class ParseTheme {
             case 'color':
                 return this.colors.on;
             case 'border':
-                return this.colors.outline;
+                return this.colors.border;
             default:
                 return this.colors.all;
-        }        
+        }
     }
 
     /**
@@ -126,11 +126,15 @@ export default class ParseTheme {
                 return color.match(/\d+/g).map(Number);
             }
         }
-        
+
         let c1 = parseColor(color1);
         let c2 = parseColor(color2);
 
         let diff = c1.reduce((acc, cur, i) => acc + Math.abs(cur - c2[i]) / 255, 0) / 3;
+
+        // if (diff <= this.tolerance) {
+        //     debugger;
+        // }
 
         return diff <= this.tolerance;
     }

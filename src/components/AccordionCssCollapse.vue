@@ -110,7 +110,7 @@ export default {
         return {
             // colors: ,
             selected: null,
-            except: ['background-clip'],
+            except: ['background-clip', 'border-radius', 'border-style' , 'background-image', 'background-repeat', 'background-position', 'background-size', 'background-origin', 'background-attachment'],
         }
     },
     methods: {
@@ -121,8 +121,11 @@ export default {
 
                 if (strict ? item.name === this.styleName : item.name.includes(this.styleName) && !this.except.includes(item.name)) {
                     // Попытка на тот же цвет повесить разные переменные закончаться не удачно
+                    if (!item.color) {
+                        debugger;
+                    }
                     if (!this.matchColor.findMatchVarAndColor(this.styleName, item.color.hex, value.name)) {
-                        alert(`Для данного цвета уже зарегистрирована переменная: ${value.name}`);
+                        console.log(`Для данного цвета ${item.color.hex} уже зарегистрирована переменная: ${value.name}`);
                     } else {
                         if (value) {
                             item.color.newValue = value.name;
@@ -145,13 +148,15 @@ export default {
         findColor(color) {
             const find = this.theme.findColor(this.styleName, color);
 
-            if (find) {
+            if (find) {                
+                console.log('Найден цвет с помощью толеранса');
                 return find;
             }
 
             const match = this.matchColor.getValue(this.styleName, color);
 
             if (match) {
+                console.log('Найден цвет из списка уже добавленных цветов');
                 return this.theme.findColorByName(this.styleName, match);
             }
 

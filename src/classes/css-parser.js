@@ -629,14 +629,23 @@ class Color {
         return value.match(regex);
     }
 
+    static isVar(value) {
+        return value.match(/var\(--[a-zA-Z0-9-_]+\)/);
+    }
+
     static nameToHex(name) {
         const colorObj = Color.names.find(x => x.color.toLowerCase() === name.toLowerCase());
         return colorObj ? colorObj.hex : null;
     }
 
     static find(value, convertToHex = false, backgroundColorAlphaChannel = "FFFFFF") {
+        let match = Color.isVar(value);
+        if (match) {
+            return null;
+        }
+
         // Проверяем, содержит ли строка значение цвета в формате имени цвета
-        let match = Color.isName(value);
+        match = Color.isName(value);
         if (match) {
             let color = match[0];
 
@@ -645,7 +654,7 @@ class Color {
             }
 
             return color;
-        }
+        }        
 
         // Проверяем, содержит ли строка значение цвета в формате #RRGGBB или #RGB
         match = Color.isHex(value);
@@ -740,7 +749,7 @@ class Style {
      */
     parseColor() {
         if (Color.has(this.name)) {
-            const color = Color.find(this.value);
+            const color = Color.find(this.value);            
             if (color) {
                 this.color = new Color(color);
             }
