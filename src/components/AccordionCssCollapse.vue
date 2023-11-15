@@ -110,7 +110,19 @@ export default {
         return {
             // colors: ,
             selected: null,
-            except: ['background-clip', 'border-radius', 'border-style' , 'background-image', 'background-repeat', 'background-position', 'background-size', 'background-origin', 'background-attachment'],
+            except: [
+                'background-clip',
+                'border-radius',
+                'border-style',
+                'background-image',
+                'background-repeat',
+                'background-position',
+                'background-size',
+                'background-origin',
+                'background-attachment',
+                'border-width'
+            ],
+            exceptItem: ['transparent', 'none']
         }
     },
     methods: {
@@ -120,6 +132,11 @@ export default {
             selector.styles.map(item => {
 
                 if (strict ? item.name === this.styleName : item.name.includes(this.styleName) && !this.except.includes(item.name)) {
+                    if (this.exceptItem.includes(item.value)) {
+                        return item;
+                    }
+
+
                     // Попытка на тот же цвет повесить разные переменные закончаться не удачно
                     if (!item.color) {
                         debugger;
@@ -148,7 +165,7 @@ export default {
         findColor(color) {
             const find = this.theme.findColor(this.styleName, color);
 
-            if (find) {                
+            if (find) {
                 console.log('Найден цвет с помощью толеранса');
                 return find;
             }

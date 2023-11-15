@@ -69,6 +69,10 @@ export default {
     --theme-blue--alert-bg: #D9EDF7;
     --theme-blue--alert-on: #31708F;
     --theme-blue--alert-border: #bce8f1;
+    --theme-blue--link-bg: #2EA8E0;
+    --theme-blue--link-on: #FFFFFF;
+    --theme-blue--linkactive-bg: #1A81B0;
+    --theme-blue--linkactive-on: #FFFFFF;
 
     --theme-green--base-bg: #87b87f;
     --theme-green--base-on: #FFFFFF;
@@ -103,6 +107,8 @@ export default {
     --theme-pink--base-on: #FFFFFF;
     --theme-pink--dark-bg: #b73766;
     --theme-pink--dark-on: #FFFFFF;
+
+    --theme-gray--base-on-link: #2EA8E0;
 }`,
             tolerance: 0
         }
